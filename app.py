@@ -1,7 +1,6 @@
 # First Dash App
-# Simple MySQL Connection and Scatterplot
 
-
+# Import libraries
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -13,31 +12,13 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-import pymysql
+# Read the data from CSV
+# query = 'SELECT * FROM DevIndex WHERE level="Subnat";'
 
 
-# MySQL database connection
-host = 'YOUR HOST HERE'
-con = pymysql.connect(host,'admin','YOUR PASSWORD','Uganda')
+df = pd.read_csv('data.csv')
 
-def mysqlcon(query):
-    
-    cursor = con.cursor()
-    
-    cursor.execute(query)
-    
-    field_name = [field[0] for field in cursor.description]
-
-    df = pd.DataFrame(data=cursor.fetchall(),columns=field_name)
-
-    return df
-    
-    con.close
-
-query = 'SELECT * FROM DevIndex WHERE level="Subnat";'
-
-# Data query
-df = mysqlcon(query)
+df = df.query('level == "Subnat"')
 
 # Find unique countries
 countries = df['country'].unique()
@@ -208,4 +189,4 @@ def update_distplot(country_selector,xaxis_column,yaxis_column):
 
 
 if __name__ == '__main__':
-    app.run_server(host="0.0.0.0",debug=True,port=8080)
+    app.run_server(host='0.0.0.0',port=80) #debug=True,
